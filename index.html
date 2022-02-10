@@ -4,12 +4,60 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Custom Flappy Bird</title>
+    <link rel="icon" type="image/x-icon" href="./img/favicon.png">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Teko:700">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <canvas width="320" height="480" id="bird"></canvas>
+    <!-- <img src="./img/flappy-bird.png" alt=""> -->
+
+    <div class="app">
+        <div class="menu">
+            <div class="toggle-mode">
+                <i class="fas fa-cloud-sun mode-day"></i>
+                <i class="fas fa-cloud-moon mode-night"></i>
+            </div>
+            <i class="fas fa-align-right menu-icon"></i>
+        </div>
+        <canvas width="320" height="480" id="bird"></canvas>
+        <div class="settings">
+            <h2 class="title">Setting</h2>
+            <h4 class="sub-title">Model</h4>
+            <div class="models">
+                <div class="model active" data-model="model1">
+                    <div class="model-image" style="background-image: url('./img/flappy-bird.png'); background-position: 71% 8.5%;"></div>
+                </div>
+                <div class="model" data-model="model2">
+                    <div class="model-image" style="background-image: url('./img/flappy-bird.png'); background-position: 71% 14.3%;"></div>
+                </div>
+                <div class="model" data-model="model3">
+                    <div class="model-image" style="background-image: url('./img/flappy-bird.png'); background-position: 71% 20.4%;"></div>
+                </div>
+            </div>
+            <h4 class="sub-title">Level</h4>
+            <div class="levels">
+                <div class="level" data-level="easy">
+                    <button class="btn-level">Easy</button>
+                </div>
+                <div class="level active" data-level="normal">
+                    <button class="btn-level">Normal</button>
+                </div>
+                <div class="level" data-level="hard">
+                    <button class="btn-level">Hard</button>
+                </div>
+            </div>
+            <button class="submit">
+                <i class="fas fa-play"></i>
+            </button>
+            <div class="close">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+    </div>
     <script src="game.js"></script>
+    <script>
+    </script>
 </body>
 </html>

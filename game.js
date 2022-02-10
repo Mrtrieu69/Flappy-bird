@@ -2,19 +2,32 @@ window.onload = () => {
     // Selector element by css selector
     const cvs = document.querySelector("#bird")
     const ctx = cvs.getContext("2d")
+    const menuBtn = document.querySelector(".menu-icon")
+    const settings = document.querySelector(".settings")
+    const submit = document.querySelector(".submit")
+    const closeBtn = document.querySelector(".close")  
+    const models = document.querySelectorAll(".model")  
+    const levels = document.querySelectorAll(".level")
+    const toggleMode = document.querySelector(".toggle-mode")
 
+ 
     // Get parameters of cvs
     const CVS_WIDTH = cvs.width
     const CVS_HEIGHT = cvs.height
 
     //The game variable
     let frames = 0
+    let isNight = false
+    var setIntervalEl
     const DEG = Math.PI / 180
     const BEST_SCORE_KEY = "BEST_SCORE"
 
     // Load image
     const sprite = new Image()
     sprite.src = "img/sprite.png"
+
+    const birdImage = new Image()
+    birdImage.src = "img/flappy-bird.png"
 
     // Load sounds
     const SCORE_S = new Audio()
@@ -64,16 +77,107 @@ window.onload = () => {
                 let clickX = e.clientX - left
                 let clickY = e.clientY - top
                 if(clickX >= startBtn.x && clickX <= startBtn.x + startBtn.w && clickY >= startBtn.y && clickY <= startBtn.y + startBtn.h){
-                    // Reset game parameters
-                    bird.resetSpeed()
-                    score.resetValue()
-                    pipes.resetPosition()
-                    state.current = state.getReady
+                    reset()
                 }
                 break
         }
-
     }
+
+    // Handle events for new function
+    menuBtn.onclick = () => {
+        settings.style.transform = "translateX(0)"
+        settings.style.userSelect = "unset"
+        settings.style.opacity = "1"
+        reset()
+    }
+
+    submit.onclick = () => {
+        settings.style.transform = "translateX(100%)"
+        settings.style.userSelect = "none"
+        settings.style.opacity = "0.7"
+    }
+
+    closeBtn.onclick = () => {
+        settings.style.transform = "translateX(100%)"
+        settings.style.userSelect = "none"
+        settings.style.opacity = "0.7"
+    }
+
+    models.forEach(model => {
+        model.onclick = () => {
+            if(document.querySelector(".model.active")){
+                document.querySelector(".model.active").classList.remove("active")
+            }
+            model.classList.add("active")
+            if(setIntervalEl){
+                clearInterval(setIntervalEl)
+            }
+            activeModel()
+        }
+    })
+
+    levels.forEach(level => {
+        level.onclick = () => {
+            if(document.querySelector(".level.active")){
+                document.querySelector(".level.active").classList.remove("active")
+            }
+            level.classList.add("active")
+            activeLevel()
+        }
+    })
+
+    toggleMode.onclick = () => {
+        isNight = !isNight
+        toggleMode.classList.toggle("night", isNight)
+    }
+
+
+    
+    // Models bird
+    const modelsBird = {
+        model1: ["66.7% 8.4%", "71% 8.5%", "75.3% 8.6%", "71% 8.5%"],
+        model2: ["66.7% 14.2%", "71% 14.3%", "75.3% 14.4%", "71% 14.3%"],
+        model3: ["66.7% 20.3%", "71% 20.4%", "75.3% 20.5%", "71% 20.4%"],
+    }
+
+    // Active the selected model (image)
+    function activeModel(){
+        const activeModel = document.querySelector(".model.active")
+        const modelImage = activeModel.querySelector(".model-image")
+        const typeActiveModel = activeModel.dataset.model
+        const paramsSelectedModel = modelsBird[typeActiveModel]
+        
+        let count = 0   
+
+        setIntervalEl = setInterval(() => {
+            modelImage.style.backgroundPosition = `${paramsSelectedModel[count]}`
+            count++
+            if(count >= paramsSelectedModel.length){
+                count =0
+            }
+        }, 1000/8)
+    } 
+
+    function activeLevel(){
+        const activeLevel = document.querySelector(".level.active")
+        const typeLActiveLevel = activeLevel.dataset.level
+        if(typeLActiveLevel === "easy"){
+            fg.dx = 2
+            pipes.dx = 3
+            bird.jump = 5
+            pipes.gap = 95
+        }else if(typeLActiveLevel === "normal"){
+            fg.dx = 3
+            pipes.dx = 4
+            bird.jump = 5
+        }else if(typeLActiveLevel === "hard"){
+            fg.dx = 4
+            pipes.dx = 5
+            bird.jump = 5.5
+        }
+    }
+
+
 
     // Background
     const bg = {
@@ -115,12 +219,32 @@ window.onload = () => {
 
     // Bird
     const bird = {
-        animations: [
-            {sX: 276, sY: 112},
-            {sX: 276, sY: 139},
-            {sX: 276, sY: 164},
-            {sX: 276, sY: 139},
+        // initialization of all birds
+        animations1: [
+            {sX: 552, sY: 45},
+            {sX: 587, sY: 46},
+            {sX: 622, sY: 47},
+            {sX: 587, sY: 46},
         ],
+        animations2: [
+            {sX: 552, sY: 73},
+            {sX: 587, sY: 74},
+            {sX: 622, sY: 75},
+            {sX: 587, sY: 74},
+        ],
+        animations3: [
+            {sX: 552, sY: 103},
+            {sX: 587, sY: 104},
+            {sX: 622, sY: 105},
+            {sX: 587, sY: 104},
+        ],
+        animations: [
+            {sX: 552, sY: 45},
+            {sX: 587, sY: 46},
+            {sX: 622, sY: 47},
+            {sX: 587, sY: 46},
+        ],
+
         w: 34,
         h: 26,
         x: 50,
@@ -135,11 +259,23 @@ window.onload = () => {
         rotation: 0,
 
         draw(){
+            // Get sources parameters from active bird (image)
+            const activeBird = document.querySelector(".model.active")
+            const typeModel = activeBird.dataset.model
+            if(typeModel === "model1"){
+                this.animations = [...this.animations1]
+            }else if(typeModel === "model2"){
+                this.animations = [...this.animations2]
+            }else if(typeModel === "model3"){
+                this.animations = [...this.animations3]
+            }
+
+            // Set parameters for active bird
             let bird = this.animations[this.frame]
             ctx.save()
             ctx.translate(this.x, this.y)
             ctx.rotate(this.rotation)
-            ctx.drawImage(sprite, bird.sX, bird.sY, this.w, this.h, -this.w/2, -this.h/2, this.w, this.h)
+            ctx.drawImage(birdImage, bird.sX, bird.sY, this.w, this.h, -this.w/2, -this.h/2, this.w, this.h)
             ctx.restore()
         },
 
@@ -163,10 +299,10 @@ window.onload = () => {
                 this.y += this.speed
                 if(this.y + this.h/2 >= CVS_HEIGHT - fg.h){
                     this.y = CVS_HEIGHT - fg.h - this.h/2
-                    if(state.current  !== state.over){
+                    if(state.current  === state.game){
                         DIE_S.play()
+                        state.current = state.over
                     }
-                    state.current = state.over
                 }
                 if(this.y - this.radius <= 0){
                     this.y = this.radius
@@ -233,7 +369,7 @@ window.onload = () => {
         h: 400,
         gap: 85,
         maxYPos: -170,
-        dx: 3,
+        dx: 4,
 
         draw(){
             for(const p of this.position){
@@ -339,11 +475,19 @@ window.onload = () => {
                 }
             }
         }
+    }  
+
+    // Reset game parameters
+    function reset(){
+        bird.resetSpeed()
+        score.resetValue()
+        pipes.resetPosition()
+        state.current = state.getReady
     }
 
     // Draw
     function draw(){
-        ctx.fillStyle = "#70c5ce"
+        ctx.fillStyle = isNight ? "#555" : "#ffde87"
         ctx.fillRect(0, 0, CVS_WIDTH, CVS_HEIGHT)
         bg.draw()
         pipes.draw()
@@ -371,5 +515,6 @@ window.onload = () => {
     }
 
     // Game start
+    activeModel()
     loop()
 }
