@@ -160,17 +160,17 @@ window.onload = () => {
 
     function activeLevel(){
         const activeLevel = document.querySelector(".level.active")
-        const typeLActiveLevel = activeLevel.dataset.level
-        if(typeLActiveLevel === "easy"){
+        const typeActiveLevel = activeLevel.dataset.level
+        if(typeActiveLevel === "easy"){
             fg.dx = 2
             pipes.dx = 3
             bird.jump = 5
             pipes.gap = 95
-        }else if(typeLActiveLevel === "normal"){
+        }else if(typeActiveLevel === "normal"){
             fg.dx = 3
             pipes.dx = 4
             bird.jump = 5
-        }else if(typeLActiveLevel === "hard"){
+        }else if(typeActiveLevel === "hard"){
             fg.dx = 4
             pipes.dx = 5
             bird.jump = 5.5
